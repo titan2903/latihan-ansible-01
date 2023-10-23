@@ -2,7 +2,7 @@
   hosts: landingpage
   become: true
   vars:
-    db_hostname: 34.101.60.143
+    db_hostname: 34.101.173.236
     db_username: titan
     db_password: password123
     db_name: landingpage
