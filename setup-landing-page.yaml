@@ -1,0 +1,11 @@
+- name: Setup landing page
+  hosts: landingpage
+  become: true
+  vars:
+    db_hostname: 34.101.60.143
+    db_username: titan
+    db_password: password123
+    db_name: landingpage
+  roles:
+    - linux-update
+    - landing-page

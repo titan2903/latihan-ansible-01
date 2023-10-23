@@ -1,0 +1,25 @@
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Delete file default config nginx
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: # loop delete file default config
+    - /etc/nginx/sites-available/default
+    - /etc/nginx/sites-enabled/default
+
+- name: Copy nginx config
+  ansible.builtin.template:
+    src: templates/default.j2
+    dest: /etc/nginx/sites-available/default
+
+- name: Symlink sites-availabe to sites-enabled
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify:
+    - Restart nginx

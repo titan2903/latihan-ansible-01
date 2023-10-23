@@ -1,0 +1,5 @@
+- name: Test playbook
+  hosts: landingpage
+  become: true
+  roles:
+    - linux-update

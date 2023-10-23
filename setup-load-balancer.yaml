@@ -1,0 +1,13 @@
+- name: Setup mariadb server
+  hosts: load-balancer
+  become: true
+  vars:
+    server_name: landing-page.titan.me
+    server:
+      - name: landingpage-01
+        host: 34.101.111.118
+      - name: landingpage-02
+        host: 34.101.114.199
+  roles:
+    - linux-update
+    - load-balancer

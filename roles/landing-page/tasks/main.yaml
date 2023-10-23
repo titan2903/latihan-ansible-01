@@ -1,0 +1,58 @@
+- name: Set hostname
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Install nginx
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - nginx
+    - php-fpm
+    - php-mysql
+    - php-gd
+    - php-zip
+
+- name: Create folder for landing-page app
+  ansible.builtin.file:
+    path: /var/www/landing-page.titan.me/html # soruce code di simpan di dalam folder `html`
+    owner: www-data
+    group: www-data
+    state: directory # membuat directory
+    mode: "0777" # permission read and execute for everyone
+
+- name: Delete file default config nginx
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: # loop delete file default config
+    - /etc/nginx/sites-available/default
+    - /etc/nginx/sites-enabled/default
+
+- name: Copy config nginx from local to server # copy file config `default` yang ada di local dan sudah di buat sesuai kebutuhan.
+  ansible.builtin.copy:
+    src: files/default
+    dest: /etc/nginx/sites-available/default
+
+- name: Symlink sites-availabe to sites-enabled
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify:
+    - Restart nginx
+
+- name: Git config safe directory
+  ansible.builtin.shell: git config --global --add safe.directory /var/www/landing-page.titan.me/html
+
+- name: Clone landing page source from Github
+  ansible.builtin.git:
+    repo: https://github.com/adhithia21/sample-php.git
+    dest: /var/www/landing-page.titan.me/html/
+    force: true
+
+- name: Copy database config
+  ansible.builtin.template:
+    src: templates/database.php.j2
+    dest: /var/www/landing-page.titan.me/html/application/config/database.php
+    backup: true
