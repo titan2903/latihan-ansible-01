@@ -1,10 +1,6 @@
 - name: Setup mariadb server
   hosts: database
   become: true
-  vars:
-    db_user: titan
-    db_password: password123
-    db_name: landingpage
   roles:
     - linux-update
     - mariadb-server
