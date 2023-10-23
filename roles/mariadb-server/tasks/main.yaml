@@ -22,7 +22,7 @@
     name: "{{ db_user }}"
     password: "{{ db_password }}"
     priv: '*.*:ALL,GRANT'
-    host_all: yes
+    host: '%'
     state: present
 
 - name: Create database
